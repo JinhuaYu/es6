@@ -4,7 +4,7 @@ import liveserver from 'gulp-live-server';
 import args from './util/args';
 
 gulp.task('serve', (cb) => {
-  if (!args.watch) return ab();
+  if (!args.watch) return cb();
 
   var server = liveserver.new(['--harmony', 'server/bin/www']);
   server.start();
@@ -14,6 +14,6 @@ gulp.task('serve', (cb) => {
   })
 
   gulp.watch(['server/routes/**/*.js', 'server/app.js'], function(){
-    server.start.bind(server)();
-  })
+    server.start.bind(server)()
+  });
 })
