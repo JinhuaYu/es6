@@ -9606,15 +9606,35 @@
 
 	'use strict';
 
-	// symbol
+	// Proxy 和 Reflect
+
 	{
-	  // 声明
-	  var a1 = Symbol();
-	  var a2 = Symbol();
-	  console.log(a1 === a2); // false
-	  var a3 = Symbol.for('a3');
-	  var a4 = Symbol.for('a3');
-	  console.log(a3 === a4); // ftrue
+	  var obj = {
+	    time: '2017-03-11',
+	    name: 'net',
+	    _r: 123
+	  };
+
+	  var monitor = new Proxy(obj, {
+	    // 拦截对象属性的读取
+	    get: function get(target, key) {
+	      return target[key].replace('2017', '2018');
+	    },
+
+	    // 拦截对象设置属性
+	    set: function set(target, key, value) {
+	      if (key === 'name') {
+	        return target[key] = value;
+	      } else {
+	        return target[key];
+	      }
+	    }
+	  });
+
+	  console.log('get', monitor.time);
+	  monitor.time = '2018';
+	  monitor.name = 'mukoo';
+	  console.log('set', monitor.time, monitor);
 	}
 
 /***/ })
