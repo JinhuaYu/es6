@@ -9606,35 +9606,22 @@
 
 	'use strict';
 
-	// Proxy 和 Reflect
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	// 类与对象
 
 	{
-	  var obj = {
-	    time: '2017-03-11',
-	    name: 'net',
-	    _r: 123
+	  // 基本定义和生成实例
+	  var Parent = function Parent() {
+	    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'mukewang';
+
+	    _classCallCheck(this, Parent);
+
+	    this.name = name;
 	  };
 
-	  var monitor = new Proxy(obj, {
-	    // 拦截对象属性的读取
-	    get: function get(target, key) {
-	      return target[key].replace('2017', '2018');
-	    },
-
-	    // 拦截对象设置属性
-	    set: function set(target, key, value) {
-	      if (key === 'name') {
-	        return target[key] = value;
-	      } else {
-	        return target[key];
-	      }
-	    }
-	  });
-
-	  console.log('get', monitor.time);
-	  monitor.time = '2018';
-	  monitor.name = 'mukoo';
-	  console.log('set', monitor.time, monitor);
+	  var v_parent = new Parent('v');
+	  console.log('构造函数和实例', v_parent);
 	}
 
 /***/ })
