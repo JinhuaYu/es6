@@ -9632,13 +9632,47 @@
 
 	"use strict";
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	// 时间模块
 
-	var Timer = function Timer() {
-	  _classCallCheck(this, Timer);
-	};
+	var Timer = function () {
+	  function Timer() {
+	    _classCallCheck(this, Timer);
+	  }
+
+	  _createClass(Timer, [{
+	    key: "countdown",
+	    value: function countdown(end, update, handle) {
+	      var now = new Date().getTime();
+	      var self = this;
+	      if (now - end) {
+	        handle.call(self);
+	      } else {
+	        var last_time = end - now; // 剩余时间
+	        var px_d = 1000 * 60 * 60 * 24; // 一天有多少毫秒
+	        var px_h = 1000 * 60 * 60; // 一小时有多少毫秒
+	        var px_m = 1000 * 60; // 一分钟有多少毫秒
+	        var px_s = 1000; // 一秒有多少毫秒
+	        var d = Math.floor(last_time / px_d); // 剩余天数
+	        var h = Math.floor((last_time - d * px_d) / px_h); // 剩余小时
+	        var m = Math.floor((last_time - d * px_d - h * px_h) / px_m); // 剩余分钟
+	        var s = Math.floor((last_time - d * px_d - h * px_h - m * px_m) / px_s); // 剩余秒
+	        var r = [];
+	        if (d > 0) {
+	          r.push("<em>" + d + "</em>\u5929");
+	        }
+	        if (r.length || h > 0) {
+	          r.push("<em>" + h + "</em>\u65F6");
+	        }
+	      }
+	    }
+	  }]);
+
+	  return Timer;
+	}();
 
 /***/ }),
 /* 336 */
