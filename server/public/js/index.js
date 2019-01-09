@@ -655,7 +655,7 @@
 
 	'use strict';
 
-	var core = module.exports = { version: '2.6.0' };
+	var core = module.exports = { version: '2.6.1' };
 	if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 /***/ }),
@@ -4786,7 +4786,7 @@
 
 	// @@split logic
 	__webpack_require__(206)('split', 2, function (defined, SPLIT, $split, maybeCallNative) {
-	  var internalSplit = $split;
+	  var internalSplit;
 	  if ('abbc'[$SPLIT](/(b)*/)[1] == 'c' || 'test'[$SPLIT](/(?:)/, -1)[LENGTH] != 4 || 'ab'[$SPLIT](/(?:ab)*/)[LENGTH] != 2 || '.'[$SPLIT](/(.?)(.?)/)[LENGTH] != 4 || '.'[$SPLIT](/()()/)[LENGTH] > 1 || ''[$SPLIT](/.?/)[LENGTH]) {
 	    // based on es5-shim implementation, need to rework it
 	    internalSplit = function internalSplit(separator, limit) {
@@ -4822,6 +4822,8 @@
 	    internalSplit = function internalSplit(separator, limit) {
 	      return separator === undefined && limit === 0 ? [] : $split.call(this, separator, limit);
 	    };
+	  } else {
+	    internalSplit = $split;
 	  }
 
 	  return [
