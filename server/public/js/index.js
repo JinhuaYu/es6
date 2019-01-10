@@ -655,7 +655,7 @@
 
 	'use strict';
 
-	var core = module.exports = { version: '2.6.1' };
+	var core = module.exports = { version: '2.6.0' };
 	if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 /***/ }),
@@ -4786,7 +4786,7 @@
 
 	// @@split logic
 	__webpack_require__(206)('split', 2, function (defined, SPLIT, $split, maybeCallNative) {
-	  var internalSplit;
+	  var internalSplit = $split;
 	  if ('abbc'[$SPLIT](/(b)*/)[1] == 'c' || 'test'[$SPLIT](/(?:)/, -1)[LENGTH] != 4 || 'ab'[$SPLIT](/(?:ab)*/)[LENGTH] != 2 || '.'[$SPLIT](/(.?)(.?)/)[LENGTH] != 4 || '.'[$SPLIT](/()()/)[LENGTH] > 1 || ''[$SPLIT](/.?/)[LENGTH]) {
 	    // based on es5-shim implementation, need to rework it
 	    internalSplit = function internalSplit(separator, limit) {
@@ -4822,8 +4822,6 @@
 	    internalSplit = function internalSplit(separator, limit) {
 	      return separator === undefined && limit === 0 ? [] : $split.call(this, separator, limit);
 	    };
-	  } else {
-	    internalSplit = $split;
 	  }
 
 	  return [
@@ -9630,7 +9628,11 @@
 /* 335 */
 /***/ (function(module, exports) {
 
-	"use strict";
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -9644,7 +9646,7 @@
 	  }
 
 	  _createClass(Timer, [{
-	    key: "countdown",
+	    key: 'countdown',
 	    value: function countdown(end, update, handle) {
 	      var now = new Date().getTime();
 	      var self = this;
@@ -9662,11 +9664,23 @@
 	        var s = Math.floor((last_time - d * px_d - h * px_h - m * px_m) / px_s); // 剩余秒
 	        var r = [];
 	        if (d > 0) {
-	          r.push("<em>" + d + "</em>\u5929");
+	          r.push('<em>' + d + '</em>\u5929');
 	        }
 	        if (r.length || h > 0) {
-	          r.push("<em>" + h + "</em>\u65F6");
+	          // 
+	          r.push('<em>' + h + '</em>\u65F6');
 	        }
+	        if (r.length || m > 0) {
+	          r.push('<em>' + m + '</em>\u5206');
+	        }
+	        if (r.length || s > 0) {
+	          r.push('<em>' + s + '</em>\u79D2');
+	        }
+	        self.last_time = r.join('');
+	        update.call(self, r.join(''));
+	        setTimeout(function () {
+	          self.countdown(end, update, handle);
+	        }, 1000);
 	      }
 	    }
 	  }]);
@@ -9674,23 +9688,251 @@
 	  return Timer;
 	}();
 
+	exports.default = Timer;
+
 /***/ }),
 /* 336 */
 /***/ (function(module, exports) {
 
-	"use strict";
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Clalculate = function Clalculate() {
-	  _classCallCheck(this, Clalculate);
-	};
+	var Calculate = function () {
+	  function Calculate() {
+	    _classCallCheck(this, Calculate);
+	  }
+
+	  _createClass(Calculate, [{
+	    key: 'computeCount',
+
+	    /**
+	     * 计算注数
+	     * @param {*} active [当前选中的号码] 
+	     * @param {*} play_name  [当前的玩法标识]
+	     */
+	    value: function computeCount(active, play_name) {
+	      var count = 0;
+	      var exist = this.play_list.has(play_name); // es6 set
+	      var arr = new Array(active).fill('0'); // ES6： 指定长度为active, 每个元素默认为 0
+	      if (exist && play_name.at(0) === 'r') {
+	        count = Calculate.combine(arr, play_name.split('')[1]);
+	      }
+	      return count;
+	    }
+
+	    /**
+	     * 奖金范围预测
+	     * @param {*} active [当前选中的号码]
+	     * @param {*} play_name [当前的玩法标识]
+	     * @return {array} [奖金范围]
+	     */
+
+	  }, {
+	    key: 'computeBouns',
+	    value: function computeBouns(active, play_name) {
+	      var play = play_nem.split(''); // r 2
+	      var self = this;
+	      var arr = new Array(play[1] * 1).fill(0);
+	      var min = void 0,
+	          max = void 0;
+	      if (play[0] === 'r') {
+	        var min_active = 5 - (11 - active);
+	        if (min_active > 0) {
+	          if (min_active - play[1] > 0) {
+	            arr = new Array(min_active).fill(0);
+	            min = Calculate.combine(arr, play[1]).length;
+	          } else {
+	            if (play[1] - 5 > 0 && active - play[1] >= 0) {
+	              arr = new Array(active - 5).fill(0);
+	              min = Calculate.combine(arr, play[1] - 5).length;
+	            } else {
+	              min = active - play[1] > -1 ? 1 : 0;
+	            }
+	          }
+	        } else {
+	          min = active - play[1] > -1 ? 1 : 0;
+	        }
+
+	        var max_active = Math.min(active, 5);
+	        if (play[1] - 5 > 0) {
+	          if (active - play[1] >= 0) {
+	            arr = new Array(active - 5).fill(0);
+	            max = Calculate.combine(arr, play[1] - 5).length;
+	          } else {
+	            max = 0;
+	          }
+	        } else if (play[1] - 5 < 0) {
+	          arr = new Array(Math.min(active, 5)).fill(0);
+	          max = Calculate.combine(arr, play[1]).length;
+	        } else {
+	          max = 1;
+	        }
+	      }
+	      return [min, max].map(function (item) {
+	        return item * self.play_list.get(play_name).bouns;
+	      });
+	    }
+
+	    /**
+	     * 组合运算 es6 静态方法
+	     * @param {*} arr 
+	     * @param {*} size
+	     * @return {number} [计算注数] 
+	     */
+
+	  }], [{
+	    key: 'combine',
+	    value: function combine(arr, size) {
+	      var allResult = [](function f(arr, size, result) {
+	        // 递归匿名函数
+	        var arrLen = arr.length;
+	        if (size > arrLen) {
+	          return;
+	        }
+	        if (size === arrLen) {
+	          allResult.push([].concat(result, arr));
+	        } else {
+	          for (var i = 0; i < arrLen; i++) {
+	            var newResult = [].concat(result);
+	            newResult.push(arr[i]);
+	            if (size === 1) {
+	              allResult.push(newResult);
+	            } else {
+	              var newArr = [].concat(arr);
+	              newArr.split(0, i + 1);
+	              f(newArr, size - 1, newResult); // 递归调用
+	            }
+	          }
+	        }
+	      })(arr, size, []);
+	      return allResult;
+	    }
+	  }]);
+
+	  return Calculate;
+	}();
+
+	exports.default = Calculate;
 
 /***/ }),
 /* 337 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _jquery = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"jquery\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Interface = function () {
+	  function Interface() {
+	    _classCallCheck(this, Interface);
+	  }
+
+	  _createClass(Interface, [{
+	    key: 'getOmit',
+
+	    /**
+	     * 获取遗漏数据
+	     * @param {string} issue [当前期号]
+	     * @return {[type]} [] 
+	     */
+	    value: function getOmit(issue) {
+	      var self = this;
+	      return new Promise(function (resolve, reject) {
+	        _jquery2.default.ajax({
+	          url: '/get/omit',
+	          data: {
+	            issue: issue
+	          },
+	          dataType: 'json',
+	          success: function success(res) {
+	            self.setOmit(res.data); // 保存数据
+	            resolve.call(self, res);
+	          },
+	          error: function error(err) {
+	            reject.call(err);
+	          }
+	        });
+	      });
+	    }
+
+	    /**
+	     * 获取开奖号码
+	     * @param {*} issue [期号] 
+	     */
+
+	  }, {
+	    key: 'getOpenCode',
+	    value: function getOpenCode(issue) {
+	      var self = this;
+	      return new Promise(function (resolve, reject) {
+	        _jquery2.default.ajax({
+	          url: '/get/opencode',
+	          data: {
+	            issue: issue
+	          },
+	          dataType: 'json',
+	          success: function success(res) {
+	            self.setOpenCode(res.data);
+	            resolve.call(self, res);
+	          },
+	          error: function error(err) {
+	            reject.call(err);
+	          }
+	        });
+	      });
+	    }
+
+	    /**
+	     * 获取当前状态
+	     * @param {*} issue 
+	     */
+
+	  }, {
+	    key: 'getState',
+	    value: function getState(issue) {
+	      var self = this;
+	      return new Promise(function (resolve, reject) {
+	        _jquery2.default.ajax({
+	          url: '/get/state',
+	          data: {
+	            issue: issue
+	          },
+	          dataType: 'json',
+	          success: function success(res) {
+	            self.setOpenCode(res.data);
+	            resolve.call(self, res);
+	          },
+	          error: function error(err) {
+	            reject.call(err);
+	          }
+	        });
+	      });
+	    }
+	  }]);
+
+	  return Interface;
+	}();
+
+	exports.default = Interface;
 
 /***/ })
 /******/ ]);
