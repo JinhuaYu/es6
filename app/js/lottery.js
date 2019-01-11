@@ -1,3 +1,5 @@
+// 功能集合
+
 import 'babel-polyfill'
 import Base from './lottery/base'
 import Timer from './lottery/timer'
@@ -48,6 +50,9 @@ class Lottery extends mix(Base, Calculate, Interface, Timer){
     this.initEvent()
   }
 
+  /**
+   * 状态更新
+   */
   updateState(){
     let self = this
     this.getState().then(function(res){
@@ -71,7 +76,17 @@ class Lottery extends mix(Base, Calculate, Interface, Timer){
     })
   }
 
+  /**
+   * 初始化事件
+   */
   initEvent(){
-
+    let self = this
+    $('#plays').on('click', 'li', self.changePlayNav.bind(self))
+    $('.boll-list').on('click', '.btn-boll', self.toggleCodeActive.bind(self))
+    $('#confirm_sel_code').on('click', self.addCode.bind(self))
+    $('.dxjo').on('click', 'li', self.assistHandle.bind(self))
+    $('.qkmethod').on('click', '.btn-middle', self.getRandomCode.bind(self))
   }
 }
+
+export default Lottery
