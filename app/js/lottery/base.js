@@ -47,7 +47,7 @@ class Base {
    */
   initNumber(){
     for(let i=1; i<12; i++){
-      this.number.add((''+1).padStart(2, '0')) // 补白
+      this.number.add((''+i).padStart(2, '0')) // 补白
     }
   }
 
@@ -72,8 +72,8 @@ class Base {
    */
   setOpenCode(code){
     let self = this
-    self.open_code.clear()
-    for(let item of code.values()){
+    self.open_code.clear();
+    for (let item of code.values()) {
       self.open_code.add(item)
     }
     self.updateOpenCode && self.updateOpenCode.call(self, code)
@@ -166,10 +166,10 @@ class Base {
   addCode(){
     let self = this
     let $active = $('.boll-list .btn-boll-active').text().match(/\d{2}/g)
-    let active = $active?$active.length:0
+    let active = $active ? $active.length : 0
     let count = self.computeCount(active, self.cur_play)
     if (count) {
-      self.addCodeItem($active.join(''), self.cur_play, self.play_list.get(self.cur_play).name, count)
+      self.addCodeItem($active.join(' '), self.cur_play, self.play_list.get(self.cur_play).name, count)
     }
   }
 
@@ -255,7 +255,7 @@ class Base {
    * 添加随机号码
    * @param {*} e 
    */
-  getRandowCode(e){
+  getRandomCode(e){
     e.preventDefault()
     let num = e.currentTarget.getAttribute['count']
     let play = this.cur_play.match(/\d+/g)[0]

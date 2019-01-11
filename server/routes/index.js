@@ -31,7 +31,7 @@ var makeIssue = function(){
     // 截至销售
     first_issue_date.setDate(first_issue_date.getDate()+1)
     end_time = first_issue_date.getTime()
-    cur_issue = [first_issue_date.getFullYear(), ('0'+first_issue_date.getMonth()+1).slice(-2), ('0'+first_issue_date.getDate()).slice(-2), '01'].join('')    
+    cur_issue = [first_issue_date.getFullYear(), ('0'+(first_issue_date.getMonth()+1)).slice(-2), ('0'+first_issue_date.getDate()).slice(-2), '01'].join('')    
   }
   var cur_date = new Date()
   if (end_time - cur_date.getTime()>1000*60*2) {
@@ -53,7 +53,7 @@ router.get('/get/omit', function(req, res, next){
   }))
 })
 
-router.get('/get/opencode', function(req, res, next){
+router.get('/get/opencode', function(req, res, next){  
   var issue = makeIssue().issue
   var data = mockjs.mock({
     'data': [/[1-3]/,/[4-5]/,/[6-7]/,/[8-9]/,/1[0-1]/]
@@ -64,8 +64,8 @@ router.get('/get/opencode', function(req, res, next){
   })
 })
 
-router.get('/get/state/', function(req, res, next){
-  var state = makeIssue()
+router.get('/get/state', function(req, res, next){
+  var state = makeIssue()  
   res.json(state)
 })
 

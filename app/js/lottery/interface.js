@@ -39,7 +39,7 @@ class Interface{
           issue: issue
         },
         dataType: 'json',
-        success: function (res) {
+        success: function (res) {        
           self.setOpenCode(res.data)
           resolve.call(self, res)
         },
@@ -55,7 +55,7 @@ class Interface{
    * @param {*} issue 
    */
   getState(issue){
-    let self = this
+    let self = this    
     return new Promise((resolve, reject) => {
       $.ajax({
         url: '/get/state',

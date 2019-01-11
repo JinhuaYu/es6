@@ -9,7 +9,7 @@ class Calculate {
     const exist = this.play_list.has(play_name) // es6 set
     const arr = new Array(active).fill('0') // ES6： 指定长度为active, 每个元素默认为 0
     if (exist && play_name.at(0)==='r') {
-      count = Calculate.combine(arr, play_name.split('')[1])
+      count = Calculate.combine(arr, play_name.split('')[1]).length
     }
     return count
   }
@@ -58,7 +58,7 @@ class Calculate {
         max = 1
       }
     }
-    return [min, max].map(item => item*self.play_list.get(play_name).bouns)
+    return [min, max].map(item => item*self.play_list.get(play_name).bonus)
   }
 
   /**
